@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>夏以昼</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Microsoft YaHei', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            cursor: default;
+            user-select: none;
+        }
+        
+        .popup {
+            position: absolute;
+            width: 280px;
+            height: 100px;
+            background-color: #000;
+            border: 1px solid #888;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            z-index: 1000;
+        }
+        
+        .popup-content {
+            color: #fff;
+            font-size: 16px;
+            text-align: center;
+            line-height: 1.4;
+        }
+        
+        .popup-close {
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        // 夏以昼风格的话语
+        const messages = [
+            "先睡个好觉，不用担心。等你睡醒，一切都来得及。",
+            "你愿意给的就是我想要的 你想要得到的 就是我愿意付出的",
+            "哥哥就是要替妹妹去死的",
+            "也许因为……我恰好也比你想象中的多爱你一点",
+            "我叫夏以昼，是你的哥哥。",
+            "乖，别哭，哥哥在，跟哥哥说",
+            "你已经让我很骄傲了",
+            "我说，你已经很让我骄傲了",
+            "下辈子的小海鸟，别再让我错过你了",
+            "我想要你留在这里 留下来 跟我过一百年",
+            "但我们只剩彼此了",
+            "我给我们的未来抽了签，是长久不离的上上签",
+            "你想要蛋糕，全都是你的，你想要夏以昼，我一直在这里，从来没有被分走过",
+            "哥哥在",
+            "我们回家",
+            "回到这个有你在身边的世界，就是命运赐予我最不可思议的魔术",
+            "这一次也请让我回到你身边"
+        ];
+        
+        let speed = 300; // 初始速度（毫秒）
+        let minSpeed = 50; // 最小速度（毫秒）
+        
+        // 创建弹窗
+        function createPopup() {
+            const popup = document.createElement('div');
+            popup.className = 'popup';
+            
+            // 随机位置
+            const x = Math.random() * (window.innerWidth - 280);
+            const y = Math.random() * (window.innerHeight - 100);
+            popup.style.left = `${x}px`;
+            popup.style.top = `${y}px`;
+            
+            // 随机消息
+            const message = messages[Math.floor(Math.random() * messages.length)];
+            
+            const content = document.createElement('div');
+            content.className = 'popup-content';
+            content.textContent = message;
+            
+            const closeBtn = document.createElement('div');
+            closeBtn.className = 'popup-close';
+            closeBtn.textContent = '×';
+            closeBtn.onclick = function() {
+                // 点击关闭按钮时创建更多弹窗
+                for(let i = 0; i < 3; i++) {
+                    setTimeout(() => createPopup(), i * 100);
+                }
+            };
+            
+            popup.appendChild(content);
+            popup.appendChild(closeBtn);
+            document.body.appendChild(popup);
+            
+            // 逐渐加快速度
+            if (speed > minSpeed) {
+                speed -= 2;
+            }
+            
+            // 拖动功能
+            let isDragging = false;
+            let offsetX, offsetY;
+            
+            popup.onmousedown = function(e) {
+                isDragging = true;
+                offsetX = e.clientX - popup.offsetLeft;
+                offsetY = e.clientY - popup.offsetTop;
+                
+                // 拖动时创建更多弹窗
+                for(let i = 0; i < 2; i++) {
+                    setTimeout(() => createPopup(), i * 100);
+                }
+            };
+            
+            document.onmousemove = function(e) {
+                if (isDragging) {
+                    popup.style.left = `${e.clientX - offsetX}px`;
+                    popup.style.top = `${e.clientY - offsetY}px`;
+                }
+            };
+            
+            document.onmouseup = function() {
+                isDragging = false;
+            };
+        }
+        
+        // 阻止右键菜单
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            createPopup();
+        });
+        
+        // 阻止键盘快捷键
+        document.addEventListener('keydown', function(e) {
+            e.preventDefault();
+            // 按任何键都会创建更多弹窗
+            for(let i = 0; i < 3; i++) {
+                setTimeout(() => createPopup(), i * 100);
+            }
+        });
+        
+        // 初始创建弹窗
+        for (let i = 0; i < 5; i++) {
+            setTimeout(() => createPopup(), i * 200);
+        }
+        
+        // 持续创建弹窗
+        setInterval(createPopup, speed);
+        
+        // 定期加速
+        setInterval(() => {
+            if (speed > minSpeed) {
+                speed -= 5;
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
